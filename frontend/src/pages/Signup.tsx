@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { registerUser } from "../api/user";
 import { useNavigate } from "react-router-dom";
-import "./AuthForm.css";
+import axios from "axios";
 
 export default function Signup() {
   const [username, setUsername] = useState("");
@@ -17,17 +17,24 @@ export default function Signup() {
     setError("");
 
     try {
-      await registerUser({ username, email, password });
-      setMessage("Signup successful! Redirecting to login...");
-      setTimeout(() => navigate("/login"), 1500);
+      const data = await registerUser(username, email, password);
+      setMessage(data.message);
+      setUsername("");
+      setEmail("");
+      setPassword("");
+
+      navigate("/login");
     } catch (err: unknown) {
-      if (err instanceof Error) setError(err.message);
-      else setError("Signup failed. Try again.");
+      if (axios.isAxiosError(err) && err.response) {
+        setError(JSON.stringify(err.response.data));
+      } else {
+        setError("Signup failed. Try again.");
+      }
     }
   };
 
   return (
-    <div className="auth-container">
+    <div className="form-container">
       <h2>Signup</h2>
       <form onSubmit={handleSubmit}>
         <input
@@ -38,15 +45,15 @@ export default function Signup() {
         />
         <input
           placeholder="Email"
-          type="email"
           value={email}
+          type="email"
           onChange={(e) => setEmail(e.target.value)}
           required
         />
         <input
           placeholder="Password"
-          type="password"
           value={password}
+          type="password"
           onChange={(e) => setPassword(e.target.value)}
           required
         />

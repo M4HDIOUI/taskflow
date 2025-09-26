@@ -1,29 +1,34 @@
+// src/pages/Login.tsx
 import { useState } from "react";
-import { loginUser } from "../api/user"; // make sure path is correct
-import { useNavigate } from "react-router-dom"; // import useNavigate
-import "./AuthForm.css";
+import { loginUser } from "../api/user";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Login() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
-  const navigate = useNavigate(); // initialize navigate
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     try {
-        const data = await loginUser(username, password);
+      const data = await loginUser(email, password);
 
-        localStorage.setItem("access_token", data.access);
-        localStorage.setItem("refresh_token", data.refresh);
+      localStorage.setItem("access_token", data.access);
+      localStorage.setItem("refresh_token", data.refresh);
 
-        navigate("/profile");
+      navigate("/profile"); // redirect after login
     } catch (err: unknown) {
-        if (err instanceof Error) setError(err.message);
-    else setError("Login failed. Try again.");
+      if (axios.isAxiosError(err) && err.response) {
+        // Display a clean message instead of JSON.stringify
+        const msg = err.response.data.detail || "Login failed. Check email/password.";
+        setError(msg);
+      } else {
+        setError("Login failed. Try again.");
+      }
     }
   };
 
@@ -32,9 +37,10 @@ export default function Login() {
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <input
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
         <input

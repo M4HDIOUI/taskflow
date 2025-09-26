@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import type { User } from "../api/user";
 import { getCurrentUser } from "../api/user";
+import type { User } from "../api/user";
 
 export default function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -20,15 +20,15 @@ export default function Profile() {
   }, []);
 
   const logout = () => {
-    localStorage.removeItem("access");
-    localStorage.removeItem("refresh");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     window.location.href = "/login";
   };
 
   if (message) return <p>{message}</p>;
 
   return (
-    <div>
+    <div className="profile-container">
       <h2>Profile</h2>
       <p>Username: {user?.username}</p>
       <p>Email: {user?.email}</p>
