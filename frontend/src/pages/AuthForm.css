@@ -1,0 +1,30 @@
+/* AuthForm.css */
+.auth-container {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.auth-container h2 {
+  text-align: center;
+}
+
+.auth-container input {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 12px;
+}
+
+.auth-container button {
+  width: 100%;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.auth-container p.success {
+  color: green;
+}
+
+.auth-container p.error {
+  color: red;
+}
