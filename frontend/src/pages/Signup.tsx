@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { signup } from "../api/user";
-import type { SignupData } from "../api/user";
-import axios from "axios";
+import { registerUser } from "../api/user";
+import { useNavigate } from "react-router-dom";
+import "./AuthForm.css";
 
 export default function Signup() {
   const [username, setUsername] = useState("");
@@ -9,35 +9,25 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage("");
     setError("");
 
-    const data: SignupData = { username, email, password };
-
     try {
-      await signup(data);
-      setMessage("Signup successful! You can now login.");
-      setUsername("");
-      setEmail("");
-      setPassword("");
+      await registerUser({ username, email, password });
+      setMessage("Signup successful! Redirecting to login...");
+      setTimeout(() => navigate("/login"), 1500);
     } catch (err: unknown) {
-      if (axios.isAxiosError(err)) {
-        if (err.response?.data) {
-          setError(JSON.stringify(err.response.data));
-        } else {
-          setError(err.message);
-        }
-      } else {
-        setError("Signup failed. Try again.");
-      }
+      if (err instanceof Error) setError(err.message);
+      else setError("Signup failed. Try again.");
     }
   };
 
   return (
-    <div className="form-container">
+    <div className="auth-container">
       <h2>Signup</h2>
       <form onSubmit={handleSubmit}>
         <input
@@ -48,17 +38,17 @@ export default function Signup() {
         />
         <input
           placeholder="Email"
+          type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          type="email"
         />
         <input
           placeholder="Password"
+          type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          type="password"
         />
         <button type="submit">Signup</button>
       </form>
