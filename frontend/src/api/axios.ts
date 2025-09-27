@@ -7,12 +7,25 @@ const axiosInstance = axios.create({
   },
 });
 
+// Add request interceptor to log requests
 axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("access");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+  console.log("Making request to:", config.url);
+  console.log("Request data:", config.data);
   return config;
 });
+
+// Add response interceptor to log responses
+axiosInstance.interceptors.response.use(
+  (response) => {
+    console.log("Response received:", response.data);
+    return response;
+  },
+  (error) => {
+    console.error("Request failed:", error);
+    console.error("Error response:", error.response?.data);
+    console.error("Error status:", error.response?.status);
+    return Promise.reject(error);
+  }
+);
 
 export default axiosInstance;

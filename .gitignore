@@ -12,3 +12,5 @@ __pycache__/
 node_modules/
 dist/
 .env
+
+test_login.py
