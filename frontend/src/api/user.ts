@@ -1,13 +1,4 @@
-// src/api/user.ts
-import axios from "axios";
-
-const API_BASE = "http://localhost:8000/api/auth";
-
-// ------------------- Types -------------------
-export interface AuthTokens {
-  access: string;
-  refresh: string;
-}
+import axiosInstance from "./axios";
 
 export interface User {
   id: number;
@@ -15,24 +6,30 @@ export interface User {
   email: string;
 }
 
-// ------------------- API Calls -------------------
+export interface AuthResponse {
+  access: string;
+  refresh: string;
+  user: User;
+}
+
 export const registerUser = async (
   username: string,
   email: string,
   password: string
 ): Promise<{ message: string }> => {
-  const response = await axios.post<{ message: string }>(
-    `${API_BASE}/register/`,
-    { username, email, password }
-  );
+  const response = await axiosInstance.post("/auth/register/", {
+    username,
+    email,
+    password,
+  });
   return response.data;
 };
 
 export const loginUser = async (
   email: string,
   password: string
-): Promise<AuthTokens> => {
-  const response = await axios.post<AuthTokens>(`${API_BASE}/login/`, {
+): Promise<AuthResponse> => {
+  const response = await axiosInstance.post<AuthResponse>("/auth/login/", {
     email,
     password,
   });
@@ -40,11 +37,6 @@ export const loginUser = async (
 };
 
 export const getCurrentUser = async (): Promise<User> => {
-  const token = localStorage.getItem("access_token");
-  if (!token) throw new Error("No access token found");
-
-  const response = await axios.get<User>(`${API_BASE}/me/`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  const response = await axiosInstance.get<User>("/auth/user/");
   return response.data;
 };

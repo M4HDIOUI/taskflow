@@ -4,35 +4,27 @@ import type { User } from "../api/user";
 
 export default function Profile() {
   const [user, setUser] = useState<User | null>(null);
-  const [message, setMessage] = useState("Loading...");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const data = await getCurrentUser();
         setUser(data);
-        setMessage("");
       } catch {
-        setMessage("Failed to fetch user. Are you logged in?");
+        setError("Failed to fetch user. Are you logged in?");
       }
     };
     fetchUser();
   }, []);
 
-  const logout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    window.location.href = "/login";
-  };
-
-  if (message) return <p>{message}</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (!user) return <p>Loading...</p>;
 
   return (
-    <div className="profile-container">
-      <h2>Profile</h2>
-      <p>Username: {user?.username}</p>
-      <p>Email: {user?.email}</p>
-      <button onClick={logout}>Logout</button>
+    <div>
+      <h2>Welcome, {user.username}</h2>
+      <p>Email: {user.email}</p>
     </div>
   );
 }
