@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { loginUser } from "../api/user";
+import GoogleButton from "../components/GoogleButton";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -56,6 +57,9 @@ export default function Login() {
         <button type="submit" disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </button>
+        <div style={{ marginTop: 12 }}>
+          <GoogleButton onSuccessRedirect="/profile" />
+        </div>
       </form>
       {error && <p className="error">{error}</p>}
       <p>

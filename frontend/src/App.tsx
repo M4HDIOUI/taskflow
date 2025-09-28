@@ -3,6 +3,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import TestAPI from "./pages/TestAPI";
+// import { GoogleLogin } from "@react-oauth/google";
 
 export default function App() {
   return (

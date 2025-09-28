@@ -62,3 +62,14 @@ export const getCurrentUser = async (): Promise<User> => {
     throw new Error(errorMessage);
   }
 };
+
+// ---------- NEW: Google login ----------
+export const socialLogin = async (token: string): Promise<LoginResponse> => {
+  try {
+    const res = await axiosInstance.post(`${BASE_URL}/google/`, { token });
+    return res.data;
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.error || "Google login failed.";
+    throw new Error(errorMessage);
+  }
+};

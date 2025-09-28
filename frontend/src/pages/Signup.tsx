@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { registerUser } from "../api/user";
 import { useNavigate } from "react-router-dom";
+import GoogleButton from "../components/GoogleButton";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -65,6 +66,9 @@ export default function Signup() {
         <button type="submit" disabled={loading}>
           {loading ? "Creating account..." : "Signup"}
         </button>
+        <div style={{ marginTop: 12 }}>
+          <GoogleButton onSuccessRedirect="/profile" />
+        </div>
       </form>
       {message && <p className="success">{message}</p>}
       {error && <p className="error">{error}</p>}
